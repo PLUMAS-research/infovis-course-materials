@@ -7,8 +7,8 @@ scripts de preparación no repiten el hostname ni la URL.
 Override
 --------
 - Publicación (`DESTINO_SCP`, `URL_BASE`, `SUBIR_AL_SERVIDOR`): variables de
-  entorno `INFOVIS_DESTINO_SCP`, `INFOVIS_URL_BASE`, `INFOVIS_SUBIR` (1 para
-  subir).
+  entorno `INFOVIS_DESTINO_SCP`, `INFOVIS_URL_BASE`, `INFOVIS_SUBIR` (0 para
+  empaquetar sin subir; la subida ocurre por omisión).
 - Fuentes crudas privadas (microdatos sin publicar, repos hermanos): no se
   versionan. Copiar `config_local.example.py` a `config_local.py` (gitignored)
   y completar las rutas, o exportar las variables `INFOVIS_*` correspondientes.
@@ -45,8 +45,11 @@ def _conf(const, env, default=None, ruta=False):
 # --- Publicación ---
 DESTINO_SCP = _conf("DESTINO_SCP", "INFOVIS_DESTINO_SCP")
 URL_BASE = _conf("URL_BASE", "INFOVIS_URL_BASE")
-SUBIR_AL_SERVIDOR = (os.environ.get("INFOVIS_SUBIR") == "1") or bool(
-    _local.get("SUBIR_AL_SERVIDOR", False)
+# La subida ocurre por omisión. Para una corrida que solo empaquete, exportar
+# INFOVIS_SUBIR=0 o poner SUBIR_AL_SERVIDOR = False en config_local.py.
+_subir = os.environ.get("INFOVIS_SUBIR")
+SUBIR_AL_SERVIDOR = (
+    _subir != "0" if _subir is not None else bool(_local.get("SUBIR_AL_SERVIDOR", True))
 )
 
 # --- Fuentes crudas ---
@@ -117,7 +120,7 @@ def publicar(nombre_dataset, dir_salida=None, extras=()):
                 print(f"  Skip (no existe): {extra}")
     else:
         destino = DESTINO_SCP or "<DESTINO_SCP no configurado>"
-        print("SUBIR_AL_SERVIDOR=False (INFOVIS_SUBIR=1 para subir). Subir manualmente:")
+        print("SUBIR_AL_SERVIDOR=False (INFOVIS_SUBIR=0 en el entorno). Subir manualmente:")
         print(f"  scp {ruta_tgz} {destino}")
         for extra in extras:
             print(f"  scp {extra} {destino}")

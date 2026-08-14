@@ -7,9 +7,9 @@ Precedencia: variable de entorno INFOVIS_* > config_local.py > default.
 DESTINO_SCP = "dichato.dcc.uchile.cl:~/public_www/infovis-data/"
 URL_BASE = "https://dcc.uchile.cl/~egraells/infovis-data"
 
-# La subida no ocurre por defecto: activarla con INFOVIS_SUBIR=1 o con esta
-# constante en True.
-SUBIR_AL_SERVIDOR = False
+# La subida ocurre por defecto: desactivarla con INFOVIS_SUBIR=0 o con esta
+# constante en False.
+SUBIR_AL_SERVIDOR = True
 
 # --- Fuentes crudas ---
 # Encuesta Origen-Destino Santiago 2012 (SECTRA), carpeta EOD_STGO.
