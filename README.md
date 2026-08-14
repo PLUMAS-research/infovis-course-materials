@@ -1,0 +1,43 @@
+# CC5208 -- Visualización de Información
+
+El material del curso se ejecuta con `uv`. [Aquí puedes ver sus instrucciones de instalación](https://docs.astral.sh/uv/getting-started/installation/).
+
+Si tienes `uv` instalado, el comando `uv sync` instala todo lo necesario para que ejecutes el código del curso.
+
+Además, en cada clase es recomendable ejecutar `uv lock --upgrade-package chiricoca` y luego `uv sync`. Esto actualizará el código del repositorio `chiricoca` (base de visualización) en caso de que haya cambiado entre una clase y otra (es probable que lo haga).
+
+Los scripts se ejecutan con `uv run python <script>.py`. Están organizados en celdas `# %%`, así que también puedes ejecutarlos paso a paso desde VS Code o desde un notebook.
+
+La carpeta `visutils` contiene funciones utilitarias para trabajar con los datos del curso. La carpeta `data` contiene datos que se descargan de manera automática en cada script.
+
+## Estructura del curso
+
+Cada unidad ocupa dos sesiones: una de teoría y una de código. Por unidad hay tres archivos:
+
+- `NN-<nombre>.py`: el script de la sesión de código.
+- `slides/NN-<nombre>/`: las slides de la sesión de teoría.
+- `figuras/NN-<nombre>.py`: el código que construye las figuras de esas slides. Las demostraciones que se ven en la clase de teoría se pueden leer, modificar y volver a ejecutar; sirven además como ejemplos cortos de matplotlib.
+
+El temario completo está en [`PLAN-CLASES.md`](PLAN-CLASES.md).
+
+## Clases
+
+* `01-primer-grafico.py`: de una tabla a un gráfico que se sostiene solo, con los nombres inscritos en el Registro Civil entre 1920 y 2021. Estructura de una tabla (ítems, atributos y sus tipos), construcción de un gráfico completo con título, ejes y fuente, la diferencia entre graficar conteos y proporciones, y una pregunta nueva derivada de lo que muestra el gráfico.
+
+* `02-tipos-de-dataset.py`: los cuatro tipos de dataset con un ejemplo de cada uno (viajes de la EOD, red de músicos de jazz, NDVI de Santiago y comunas de la Región Metropolitana). Qué es un ítem en cada caso, qué tipos de atributo hay, cómo se grafica un atributo cíclico y cómo la misma tabla se puede modelar como red.
+
+* `03-tareas.py`: una pregunta, una tarea, un gráfico, con los siniestros de tránsito de la Región Metropolitana. Nombrar la tarea (acción más objetivo) antes de elegir el gráfico, y distinguir cuándo una respuesta es una descripción de los datos y cuándo llega a ser un insight.
+
+## Evaluación
+
+El curso se evalúa con un proyecto que avanza durante el semestre a través de cuatro hitos y un examen. Los hitos son la definición del proyecto y la presentación de sus datos (10%), el análisis exploratorio (20%), los insights (30%) y el producto de visualización (40%). El examen es un poster.
+
+Se exime del examen quien tenga nota de hitos igual o superior a 5,5 y asistencia superior al 80% de las sesiones. Quien no se exime obtiene su nota final con 60% de la nota de hitos y 40% de la nota del examen.
+
+Las rúbricas están en `evaluacion/`.
+
+## Bibliografía
+
+- Munzner, T. (2014). *Visualization Analysis and Design*. CRC Press. Es la base del contenido teórico del curso.
+- Cairo, A. (2012). *The Functional Art*. New Riders.
+- Meirelles, I. (2013). *Design for Information*. Rockport.

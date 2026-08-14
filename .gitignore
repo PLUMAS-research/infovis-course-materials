@@ -6,3 +6,9 @@ data/
 old-slides/
 profe-scripts/config_local.py
 apuntes/
+
+# El material de clases no se versiona por ahora
+slides/
+images/
+CLAUDE.md
+PLAN-CLASES.md
