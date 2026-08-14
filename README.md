@@ -12,13 +12,12 @@ La carpeta `visutils` contiene funciones utilitarias para trabajar con los datos
 
 ## Estructura del curso
 
-Cada unidad ocupa dos sesiones: una de teoría y una de código. Por unidad hay tres archivos:
+Cada unidad ocupa dos sesiones: una de teoría y una de código. Acá están las piezas ejecutables de las dos:
 
 - `NN-<nombre>.py`: el script de la sesión de código.
-- `slides/NN-<nombre>/`: las slides de la sesión de teoría.
-- `figuras/NN-<nombre>.py`: el código que construye las figuras de esas slides. Las demostraciones que se ven en la clase de teoría se pueden leer, modificar y volver a ejecutar; sirven además como ejemplos cortos de matplotlib.
+- `figuras/NN-<nombre>.py`: el código que construye las figuras que se muestran en la sesión de teoría. Las demostraciones de esa clase se pueden leer, modificar y volver a ejecutar; sirven además como ejemplos cortos de matplotlib.
 
-El temario completo está en [`PLAN-CLASES.md`](PLAN-CLASES.md).
+Los dos escriben sus figuras en `images/`, que se crea al ejecutarlos. Las slides de la sesión de teoría se entregan aparte y no están en este repositorio.
 
 ## Clases
 
@@ -26,7 +25,7 @@ El temario completo está en [`PLAN-CLASES.md`](PLAN-CLASES.md).
 
 * `02-tipos-de-dataset.py`: los cuatro tipos de dataset con un ejemplo de cada uno (viajes de la EOD, red de músicos de jazz, NDVI de Santiago y comunas de la Región Metropolitana). Qué es un ítem en cada caso, qué tipos de atributo hay, cómo se grafica un atributo cíclico y cómo la misma tabla se puede modelar como red.
 
-* `03-tareas.py`: una pregunta, una tarea, un gráfico, con los siniestros de tránsito de la Región Metropolitana. Nombrar la tarea (acción más objetivo) antes de elegir el gráfico, y distinguir cuándo una respuesta es una descripción de los datos y cuándo llega a ser un insight.
+* `03-tareas.py`: una pregunta, una tarea, un gráfico, con los siniestros de tránsito de la Región Metropolitana. Nombrar la tarea (acción más objetivo) antes de elegir el gráfico, y distinguir cuándo una respuesta es una descripción de los datos y cuándo llega a ser un insight. La segunda mitad arma un hito 1 completo con el mismo dataset: la propuesta, las variables con sus distribuciones, la cobertura temporal y espacial, y los límites que hay que declarar.
 
 ## Evaluación
 
