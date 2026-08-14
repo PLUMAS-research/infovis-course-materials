@@ -1,0 +1,7 @@
+__pycache__/
+.vscode/
+.DS_Store
+.venv/
+data/
+old-slides/
+profe-scripts/config_local.py
