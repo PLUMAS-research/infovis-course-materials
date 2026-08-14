@@ -10,4 +10,4 @@ Estos scripts son parte del material de estudio. Las demostraciones de las clase
 
 Sirven además como ejemplos cortos de matplotlib. Cada uno cabe en una pantalla y muestra una operación básica: componer una grilla de paneles, anotar un punto, controlar los límites de los ejes, elegir marcadores y colores.
 
-El estilo visual (fuente, colores, resolución) viene de `visutils.estilo`, así que las figuras se ven igual en las slides, en los apuntes y en los scripts de clase.
+El estilo visual (fuente, colores, resolución) viene de `visutils.estilo`, así que las figuras se ven igual en las slides y en los scripts de clase.

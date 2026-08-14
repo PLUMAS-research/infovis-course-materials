@@ -120,6 +120,8 @@ ax.set_title("Cuándo ocurre cada tipo de siniestro")
 ax.set_xlabel("Hora de inicio")
 ax.set_ylabel("Proporción del tipo")
 ax.set_xlim(0, 23)
+ax.legend(title=None)  # el título sería "tipo_agrupado", el nombre de la columna
+fig.savefig("images/03-horas.png", dpi=300, bbox_inches="tight")
 plt.show()
 
 for tipo in TIPOS:
@@ -357,5 +359,6 @@ print(f"Atributos sin valores faltantes: {(faltantes == 0).sum()} de {len(faltan
 print(f"Cobertura de la hora: {siniestros['hora'].notna().mean():.0%}")
 
 print("\nFiguras escritas en images/:")
+print("  images/03-horas.png")
 for nombre in ["tipos", "victimas", "cobertura", "mapa"]:
     print(f"  images/03-hito1-{nombre}.png")
