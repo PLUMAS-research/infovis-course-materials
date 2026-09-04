@@ -1,23 +1,8 @@
 ---
 title: "Rúbricas de hitos y examen"
-subtitle: "CC5208, Visualización de Información"
+subtitle: "CC5208 -- Visualización de Información"
 lang: es
 ---
-
-El proyecto del curso avanza a través de cuatro hitos y un examen. Cada hito se presenta ante el curso y la asistencia es obligatoria.
-
-Los hitos tienen ponderación creciente, porque cada uno parte del anterior y acumula su trabajo:
-
-| Hito | Contenido | Peso en la nota de hitos |
-|---|---|---|
-| 1 | Definición del proyecto y presentación de los datos | 10% |
-| 2 | Análisis exploratorio de los datos | 20% |
-| 3 | Insights | 30% |
-| 4 | Producto | 40% |
-
-Se exime del examen quien tenga nota de hitos igual o superior a 5,5 y asistencia superior al 80% de las sesiones. Quien se exime termina el curso con la nota de hitos. Quien no se exime rinde el examen, y su nota final es 60% de la nota de hitos más 40% de la nota del examen.
-
-Cada rúbrica de hito reparte 6 puntos sobre una base de 1,0, de modo que el puntaje máximo corresponde a la nota 7,0. Cada ítem tiene tres niveles: insuficiente (0% del puntaje del ítem), suficiente (50%) y excelente (100%).
 
 # Hito 1. Definición del proyecto y presentación de los datos
 
