@@ -79,3 +79,14 @@ def titulo(ax, fig, x, y, texto, parentesis=None, size=11, italica=False):
         borde = t.get_window_extent().transformed(ax.transData.inverted())
         rotulo(ax, borde.x1 + 0.5, y, parentesis, size=size - 3, ha="left")
     return t
+
+
+def llave(ax, x_desde, x_hasta, y, alto=1.2, color=AZUL, lw=0.9):
+    """Llave horizontal que abarca un rango, con las puntas hacia el contenido.
+
+    El signo de `alto` decide hacia dónde apuntan las puntas: positivo para una
+    llave que va debajo de lo que agrupa, negativo para una que va encima.
+    """
+    ax.plot([x_desde, x_hasta], [y, y], color=color, lw=lw, solid_capstyle="butt")
+    for x in (x_desde, x_hasta):
+        ax.plot([x, x], [y, y + alto], color=color, lw=lw, solid_capstyle="butt")
