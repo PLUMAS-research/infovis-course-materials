@@ -21,9 +21,9 @@ from matplotlib.patches import Circle, Polygon, Rectangle
 add_project_root(marker="pyproject.toml")
 
 from visutils.diagramas import encabezado, flecha, rotulo, titulo  # noqa: E402
-from visutils.estilo import AZUL, GRIS, MAGENTA, estilo_curso  # noqa: E402
+from visutils.estilo import AZUL, DPI, GRIS, MAGENTA, estilo_curso  # noqa: E402
 
-estilo_curso(dpi=300)
+estilo_curso(dpi=DPI)
 
 DIR_IMAGENES = Path("images")
 DIR_IMAGENES.mkdir(exist_ok=True)
@@ -314,7 +314,7 @@ for x, nombre, pic in [
     hoja(ax, fig, x, 16.6, nombre)
     pic(ax, x - 0.5, 7.5)
 
-fig.savefig(DIR_IMAGENES / "03-tareas-acciones.png", dpi=300, bbox_inches="tight")
+fig.savefig(DIR_IMAGENES / "03-tareas-acciones.png", dpi=DPI, bbox_inches="tight")
 plt.close(fig)
 print("Escrito: images/03-tareas-acciones.png")
 
@@ -357,6 +357,6 @@ titulo(ax, fig, 58.0, 13.6, "Espacio", size=9)
 hoja(ax, fig, 63.0, 9.6, "Forma")
 pic_forma(ax, 62.5, 1.0)
 
-fig.savefig(DIR_IMAGENES / "03-tareas-objetivos.png", dpi=300, bbox_inches="tight")
+fig.savefig(DIR_IMAGENES / "03-tareas-objetivos.png", dpi=DPI, bbox_inches="tight")
 plt.close(fig)
 print("Escrito: images/03-tareas-objetivos.png")

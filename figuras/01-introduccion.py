@@ -23,10 +23,10 @@ from matplotlib.patches import Circle, Ellipse, Polygon, Rectangle
 add_project_root(marker="pyproject.toml")
 
 from visutils.diagramas import caja, celda, encabezado, flecha, rotulo, titulo  # noqa: E402
-from visutils.estilo import AZUL, GRIS, MAGENTA, estilo_curso  # noqa: E402
+from visutils.estilo import AZUL, DPI, GRIS, MAGENTA, estilo_curso  # noqa: E402
 
 # dpi alto con figuras chicas: el texto queda grande y nítido al proyectar.
-estilo_curso(dpi=300)
+estilo_curso(dpi=DPI)
 
 DIR_IMAGENES = Path("images")
 DIR_IMAGENES.mkdir(exist_ok=True)
@@ -69,7 +69,7 @@ axes[0].set_ylabel("y")
 for ax in axes:
     ax.set_xlabel("x")
 
-fig.savefig(DIR_IMAGENES / "01-anscombe.png", dpi=300, bbox_inches="tight")
+fig.savefig(DIR_IMAGENES / "01-anscombe.png", dpi=DPI, bbox_inches="tight")
 plt.close(fig)
 print("\nEscrito: images/01-anscombe.png")
 
@@ -130,7 +130,7 @@ for ax, objetivo in zip(axes, OBJETIVOS):
     ax.set_yticks([])
     ax.grid(False)
 
-fig.savefig(DIR_IMAGENES / "01-preatentivo.png", dpi=300, bbox_inches="tight")
+fig.savefig(DIR_IMAGENES / "01-preatentivo.png", dpi=DPI, bbox_inches="tight")
 plt.close(fig)
 print("Escrito: images/01-preatentivo.png")
 
@@ -332,7 +332,7 @@ ax.scatter(PUNTOS_GEO[:, 0], PUNTOS_GEO[:, 1], s=42, color=MAGENTA, zorder=3)
 flecha(ax, (95.5, PUNTOS_GEO[1][1] + 0.2), PUNTOS_GEO[1] + np.array([0.7, 0.0]))
 rotulo(ax, 95.9, PUNTOS_GEO[1][1] + 0.2, "Posición", ha="left")
 
-fig.savefig(DIR_IMAGENES / "01-tipos-dataset.png", dpi=300, bbox_inches="tight")
+fig.savefig(DIR_IMAGENES / "01-tipos-dataset.png", dpi=DPI, bbox_inches="tight")
 plt.close(fig)
 print("Escrito: images/01-tipos-dataset.png")
 
@@ -422,7 +422,7 @@ fig, ax = plt.subplots(figsize=FIGSIZE_P)
 plano_decision(ax)
 regiones_decision(ax, DIAG_ARRIBA, DIAG_DERECHA, (46.0, 34.0))
 
-fig.savefig(DIR_IMAGENES / "01-cuando-visualizar.png", dpi=300, bbox_inches="tight")
+fig.savefig(DIR_IMAGENES / "01-cuando-visualizar.png", dpi=DPI, bbox_inches="tight")
 plt.close(fig)
 print("Escrito: images/01-cuando-visualizar.png")
 
@@ -457,7 +457,7 @@ y_ahora = ARRIBA_P + (DIAG_DERECHA_LLM - ARRIBA_P) / (DER - DIAG_ARRIBA_LLM) * (
 )
 flecha(ax, (X_FLECHA, y_antes - 1.5), (X_FLECHA, y_ahora + 1.5), lw=1.3, escala=10, color=MAGENTA)
 
-fig.savefig(DIR_IMAGENES / "01-cuando-visualizar-llm.png", dpi=300, bbox_inches="tight")
+fig.savefig(DIR_IMAGENES / "01-cuando-visualizar-llm.png", dpi=DPI, bbox_inches="tight")
 plt.close(fig)
 print("Escrito: images/01-cuando-visualizar-llm.png")
 print(
@@ -519,7 +519,7 @@ for nombre, centro in NUCLEO:
 rotulo(ax, 0.0, -1.20, "Ciencia de datos", size=11, weight="bold", color=MAGENTA, zorder=5,
        bbox=dict(facecolor="white", edgecolor="none", pad=2.0))
 
-fig.savefig(DIR_IMAGENES / "01-venn-ciencia-de-datos.png", dpi=300, bbox_inches="tight")
+fig.savefig(DIR_IMAGENES / "01-venn-ciencia-de-datos.png", dpi=DPI, bbox_inches="tight")
 plt.close(fig)
 print("Escrito: images/01-venn-ciencia-de-datos.png")
 
@@ -579,6 +579,6 @@ for x in (35, 63):
     flecha(ax, (x, Y_RETORNO), (x, 16), lw=1.4, escala=9, color=GRIS)
 rotulo(ax, 62, Y_RETORNO - 2.4, "interacción y manipulación", size=7.5, va="top")
 
-fig.savefig(DIR_IMAGENES / "01-pipeline-dursteler.png", dpi=300, bbox_inches="tight")
+fig.savefig(DIR_IMAGENES / "01-pipeline-dursteler.png", dpi=DPI, bbox_inches="tight")
 plt.close(fig)
 print("Escrito: images/01-pipeline-dursteler.png")

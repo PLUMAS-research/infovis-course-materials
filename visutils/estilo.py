@@ -13,6 +13,10 @@ from chiricoca.config import setup_style
 FUENTE = "Beauchef"
 PATRON_FUENTES = "Latinotype*/Fonts/Beauchef/OTF/*.otf"
 
+# Resolución de las figuras que van a las slides. A 300 el texto chico se ve
+# pixelado cuando la lámina se mira con zoom en el PDF.
+DPI = 400
+
 # Tema de las slides: azul para títulos y texto, magenta para el acento.
 AZUL = "#0A0E50"
 MAGENTA = "#CF3889"
@@ -31,11 +35,11 @@ def registrar_fuente():
     return FUENTE in mpl.font_manager.get_font_names()
 
 
-def estilo_curso(dpi=192, **kwargs):
+def estilo_curso(dpi=DPI, **kwargs):
     """Aplica el estilo de chiricoca con la fuente del curso.
 
-    Para las figuras que van a las slides conviene `dpi=300` junto con un
-    `figsize` chico, así el texto queda grande y nítido en la proyección.
+    Las figuras van a las slides, así que conviene un `figsize` chico junto con
+    el `DPI` del curso: el texto queda grande y nítido en la proyección.
     """
     fuente = FUENTE if registrar_fuente() else None
     setup_style(dpi=dpi, font_family=fuente, **kwargs)

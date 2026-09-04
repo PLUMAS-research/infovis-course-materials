@@ -28,10 +28,10 @@ from rasterio.plot import plotting_extent
 # repositorio al path para poder importar visutils.
 add_project_root(marker="pyproject.toml")
 
-from visutils.estilo import AZUL, MAGENTA, estilo_curso  # noqa: E402
+from visutils.estilo import AZUL, DPI, MAGENTA, estilo_curso  # noqa: E402
 from visutils.general import descargar_archivo, descargar_datos  # noqa: E402
 
-estilo_curso(dpi=300)
+estilo_curso(dpi=DPI)
 
 DIR_IMAGENES = Path("images")
 DIR_IMAGENES.mkdir(exist_ok=True)
@@ -63,7 +63,7 @@ def contexto(ax, capa, margen=0.02):
 
 
 def guardar(fig, nombre):
-    fig.savefig(DIR_IMAGENES / nombre, dpi=300, bbox_inches="tight")
+    fig.savefig(DIR_IMAGENES / nombre, dpi=DPI, bbox_inches="tight")
     plt.close(fig)
     print(f"Escrito: images/{nombre}")
 

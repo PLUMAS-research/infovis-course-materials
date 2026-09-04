@@ -20,10 +20,10 @@ from matplotlib.patches import FancyArrowPatch, Polygon
 add_project_root(marker="pyproject.toml")
 
 from visutils.diagramas import encabezado, flecha, rotulo, titulo  # noqa: E402
-from visutils.estilo import AZUL, MAGENTA, estilo_curso  # noqa: E402
+from visutils.estilo import AZUL, DPI, MAGENTA, estilo_curso  # noqa: E402
 
 # dpi alto con figuras chicas: el texto queda grande y nítido al proyectar.
-estilo_curso(dpi=300)
+estilo_curso(dpi=DPI)
 
 DIR_IMAGENES = Path("images")
 DIR_IMAGENES.mkdir(exist_ok=True)
@@ -116,7 +116,7 @@ ax.add_patch(
     )
 )
 
-fig.savefig(DIR_IMAGENES / "02-tipos-atributo.png", dpi=300, bbox_inches="tight")
+fig.savefig(DIR_IMAGENES / "02-tipos-atributo.png", dpi=DPI, bbox_inches="tight")
 plt.close(fig)
 print("Escrito: images/02-tipos-atributo.png")
 
@@ -182,7 +182,7 @@ ax_cic.set_xticklabels(MESES, fontsize=6)
 ax_cic.set_yticklabels([])
 ax_cic.set_title("Cíclico", fontsize=9)
 
-fig.savefig(DIR_IMAGENES / "02-direcciones-orden.png", dpi=300, bbox_inches="tight")
+fig.savefig(DIR_IMAGENES / "02-direcciones-orden.png", dpi=DPI, bbox_inches="tight")
 plt.close(fig)
 print("Escrito: images/02-direcciones-orden.png")
 
