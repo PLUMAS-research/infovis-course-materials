@@ -102,8 +102,6 @@ ax_polar.set_xticklabels([f"{h}h" for h in range(0, 24, 3)])
 ax_polar.set_yticklabels([])
 ax_polar.set_title("Eje polar")
 
-plt.show()
-
 # En el eje polar la madrugada es continua y las dos puntas del día quedan
 # visibles a la vez.
 print(f"Hora con más viajes: {por_hora.idxmax()}h ({por_hora.max():,} viajes)")
@@ -136,7 +134,6 @@ grados.plot(kind="hist", bins=25, color=AZUL, ax=ax)
 ax.set_title("Colaboraciones por músico")
 ax.set_xlabel("Grado (cantidad de colaboradores)")
 ax.set_ylabel("Músicos")
-plt.show()
 
 # %%
 # PARTE 5: el campo
@@ -177,8 +174,6 @@ axes[1].axvline(0.3, color=MAGENTA, linestyle="--")
 axes[1].set_title("Distribución del NDVI")
 axes[1].set_xlabel("NDVI")
 axes[1].set_ylabel("Celdas")
-
-plt.show()
 
 # La vecindad no hay que declararla en ninguna parte: está en los índices del
 # arreglo. La celda [i, j] limita con [i-1, j] y con [i, j+1], y eso alcanza
@@ -236,8 +231,6 @@ axes[1].set_title("Magnitud del gradiente")
 axes[1].set_axis_off()
 fig.colorbar(imagen, ax=axes[1], shrink=0.8)
 
-plt.show()
-
 # La magnitud es alta donde el NDVI cambia rápido de una celda a la siguiente,
 # es decir en los bordes entre lo construido y lo vegetado.
 
@@ -263,7 +256,6 @@ print(comunas.nlargest(5, "area_km2")[["comuna", "provincia", "area_km2"]])
 fig, ax = figure_from_geodataframe(comunas, height=4)
 choropleth_map(comunas, "area_km2", k=5, binning="quantiles", palette="PuBu", ax=ax)
 ax.set_title("Superficie de las comunas de la Región Metropolitana")
-plt.show()
 
 # %%
 # PARTE 7: los tipos no son fijos
@@ -323,7 +315,6 @@ for origen, destino, datos in red_comunas.edges(data=True):
 
 ax.set_title("Flujos de viajes entre comunas, EOD Santiago 2012")
 ax.set_axis_off()
-plt.show()
 
 # %%
 # PARTE 8: resumen

@@ -10,7 +10,7 @@ qué mostrar.
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from visutils.estilo import estilo_curso
+from visutils.estilo import DPI, estilo_curso
 from visutils.general import descargar_datos
 
 estilo_curso()
@@ -63,7 +63,6 @@ maria = guaguas[guaguas["nombre"] == "María"].groupby("anio")[["n", "proporcion
 
 fig, ax = plt.subplots(figsize=(5, 2.5))
 maria["n"].plot(ax=ax)
-plt.show()
 
 # El gráfico muestra la forma, pero no se sostiene solo: nadie que lo vea
 # fuera de esta pantalla sabe qué mide el eje y, de dónde salen los datos ni
@@ -100,8 +99,6 @@ fig.text(
     fontsize=6,
 )
 
-plt.show()
-
 # %%
 # PARTE 5: el conteo y la proporción responden preguntas distintas
 #
@@ -127,8 +124,6 @@ for ax in axes:
     ax.set_xlabel("Año de inscripción")
     ax.set_xlim(1920, 2021)
     ax.set_ylim(0, None)
-
-plt.show()
 
 print()
 print(f"Máximo en conteo:    {maria['n'].idxmax()}")
@@ -191,8 +186,7 @@ fig.text(
     fontsize=6,
 )
 
-fig.savefig("images/01-nombres-generaciones.png", dpi=300, bbox_inches="tight")
-plt.show()
+fig.savefig("images/01-nombres-generaciones.png", dpi=DPI, bbox_inches="tight")
 
 for nombre in NOMBRES:
     print(f"{nombre:10s} máximo {series[nombre].max() * 100:.2f}% en {series[nombre].idxmax()}")
@@ -233,8 +227,7 @@ fig.text(
     fontsize=6,
 )
 
-fig.savefig("images/01-diversidad-nombres.png", dpi=300, bbox_inches="tight")
-plt.show()
+fig.savefig("images/01-diversidad-nombres.png", dpi=DPI, bbox_inches="tight")
 
 print(diversidad.loc[[1920, 1960, 1990, 2021]])
 

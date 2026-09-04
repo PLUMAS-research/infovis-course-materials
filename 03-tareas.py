@@ -18,7 +18,7 @@ from chiricoca.geo.grid import h3_grid_from_bounds
 from chiricoca.maps import choropleth_map, dot_map
 from chiricoca.tables import barchart
 
-from visutils.estilo import AZUL, GRIS, MAGENTA, estilo_curso
+from visutils.estilo import AZUL, DPI, GRIS, MAGENTA, estilo_curso
 from visutils.general import descargar_datos
 
 estilo_curso()
@@ -84,7 +84,6 @@ axes[1].set_xlabel("Víctimas por siniestro")
 # La inversión va después de dibujar los dos paneles: con sharey, pandas
 # reajusta el eje compartido al graficar el segundo y la deshace.
 axes[0].invert_yaxis()
-plt.show()
 
 # %%
 # PARTE 3: cuándo ocurren
@@ -121,8 +120,7 @@ ax.set_xlabel("Hora de inicio")
 ax.set_ylabel("Proporción del tipo")
 ax.set_xlim(0, 23)
 ax.legend(title=None)  # el título sería "tipo_agrupado", el nombre de la columna
-fig.savefig("images/03-horas.png", dpi=300, bbox_inches="tight")
-plt.show()
+fig.savefig("images/03-horas.png", dpi=DPI, bbox_inches="tight")
 
 for tipo in TIPOS:
     print(f"{tipo}: hora más frecuente {proporcion[tipo].idxmax()}h "
@@ -148,7 +146,6 @@ dot_map(
 dot_map(atropellos, size=0.6, color=MAGENTA, alpha=0.5, add_legend=False, ax=ax, zorder=2)
 ax.set_title("Atropellos sobre el resto de los siniestros")
 ax.set_axis_off()
-plt.show()
 
 # El mapa de puntos responde dónde hay muchos, no dónde son más peligrosos. Para
 # lo segundo hay que normalizar por la cantidad de siniestros de cada comuna. El
@@ -239,8 +236,7 @@ ax.set_title("Tipos de siniestro y cuáles dejan víctimas")
 ax.set_xlabel("Siniestros, 2019 a 2023")
 ax.set_ylabel("")
 ax.xaxis.set_major_formatter(lambda x, _: f"{x:,.0f}".replace(",", "."))
-fig.savefig("images/03-hito1-tipos.png", dpi=300, bbox_inches="tight")
-plt.show()
+fig.savefig("images/03-hito1-tipos.png", dpi=DPI, bbox_inches="tight")
 
 # %%
 # PARTE 8: la variabilidad de la variable central
@@ -273,8 +269,7 @@ ax.set_xlabel("Víctimas en el siniestro")
 ax.set_ylabel("% de los siniestros")
 ax.set_ylim(0, distribucion.max() * 1.15)
 ax.tick_params(axis="x", rotation=0)
-fig.savefig("images/03-hito1-victimas.png", dpi=300, bbox_inches="tight")
-plt.show()
+fig.savefig("images/03-hito1-victimas.png", dpi=DPI, bbox_inches="tight")
 
 # %%
 # PARTE 9: la cobertura temporal
@@ -297,8 +292,7 @@ ax.set_title("Siniestros por mes, con media móvil de 12 meses")
 ax.set_ylabel("Siniestros")
 ax.set_xlabel("")
 ax.set_ylim(0)
-fig.savefig("images/03-hito1-cobertura.png", dpi=300, bbox_inches="tight")
-plt.show()
+fig.savefig("images/03-hito1-cobertura.png", dpi=DPI, bbox_inches="tight")
 
 # %%
 # PARTE 10: la cobertura espacial
@@ -325,8 +319,7 @@ choropleth_map(celdas, "siniestros", k=6, binning="fisher_jenks", palette="magma
 comunas.boundary.plot(ax=ax, color=AZUL, linewidth=0.3, zorder=5)
 ax.set_title("Siniestros por celda hexagonal")
 ax.set_axis_off()
-fig.savefig("images/03-hito1-mapa.png", dpi=300, bbox_inches="tight")
-plt.show()
+fig.savefig("images/03-hito1-mapa.png", dpi=DPI, bbox_inches="tight")
 
 # %%
 # PARTE 11: hasta dónde llegan los datos
