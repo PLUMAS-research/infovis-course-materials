@@ -33,6 +33,24 @@ Los dos escriben sus figuras en `images/`, que se crea al ejecutarlos. Las slide
 
 * `06-analisis-exploratorio.py`: un análisis exploratorio completo con la forma de un hito 2, sobre los nombres del Registro Civil. Los criterios de limpieza y filtrado con sus conteos, las propiedades globales respondiendo qué, cuándo y cómo, la comparación entre grupos que vienen en los datos y grupos derivados (incluido un agrupamiento por la forma de la trayectoria), y una conclusión sobre la factibilidad con sus límites declarados.
 
+* `07-mapas.py`: el catálogo de tipos de mapa sobre los viajes georreferenciados de la EOD. De coordenadas numéricas a geometría, el encuadre del área de estudio, dot map, mapa de calor, burbujas, coropleta sobre dos particiones distintas, flujos entre comunas, cartogramas, isolíneas y el efecto de la proyección sobre el área medida.
+
+* `07-hito2.py`: la clase práctica de geografía, armada como un hito 2 completo sobre la ampliación del Metro de Santiago. La propuesta del proyecto es ordenar los sectores según la brecha entre su demanda de transporte público y su acceso al Metro; el hito 2 revisa si los datos la sostienen. Explora las variables, mide la demanda previa a la Línea 3 y la Línea 6 con la Encuesta Origen-Destino 2012, reconstruye el área de servicio de la red antes y después con operaciones entre áreas, y termina identificando los sectores que siguen sin Metro pese a tener la demanda de los que lo ganaron. Cierra con la lectura comunal, usando la población del Censo 2024.
+
+* `07-geometria.py`: apéndice de operaciones geométricas, para consultar cuando un proyecto se topa con una de ellas. Medir área, largo y distancia; derivar un punto y simplificar un borde; unir dos capas por una columna, por su ubicación y por cercanía, con lo que hay que revisar en cada caso; agregar sobre una grilla H3 y repartir un dato de un soporte a otro; y guardar el resultado.
+
+## Datos
+
+Los scripts descargan lo que necesitan a `data/` la primera vez que se ejecutan, así que no hay que bajar nada a mano.
+
+Quien prepare los datasets del curso los publica con:
+
+```shell
+uv run python profe-scripts/publicar.py --subir
+```
+
+Sin `--subir` el comando hace el recorrido en seco y muestra qué falta.
+
 ## Evaluación
 
 El curso se evalúa con un proyecto que avanza durante el semestre a través de cuatro hitos y un examen. Los hitos son la definición del proyecto y la presentación de sus datos (10%), el análisis exploratorio (20%), los insights (30%) y el producto de visualización (40%). El examen es un poster.
@@ -49,6 +67,7 @@ Datos de fuentes que el material cita y que hay que confirmar antes de dejarlas 
   - *Romané*, telenovela de TVN: Branco, Milenka, Salomé y Jovanka alcanzan su máximo en 2000 (Branco pasa de 22 inscripciones en 1999 a 156 en 2000). La atribución viene del script `08-texto-guaguas.py` de la versión anterior del curso. Falta confirmar el año de emisión y que esos cuatro sean nombres de personajes.
   - Backstreet Boys: Kevin, Bryan y Nick alcanzan su máximo en 1998 y Brian en 1999. Falta confirmar cuáles fueron los años de mayor circulación de la banda en Chile. Kevin ya venía subiendo desde 1990, así que la banda explica el máximo pero no toda la trayectoria.
   - One Direction: Liam despega entre 2012 y 2014, cuando la banda estaba activa, y sigue subiendo hasta 2021. Falta confirmar el período de actividad de la banda. Ninguno de los otros cuatro nombres del grupo tiene volumen en el registro.
+- Los radios de 400 y 800 metros que usa `07-hito2.py` como distancia caminable hasta un paradero y hasta una estación. La convención del cuarto de milla y la media milla circula en la planificación de transporte, y la referencia candidata es Guerra, E., Cervero, R. y Tischler, D. (2012), *Half-Mile Circle: Does It Best Represent Transit Station Catchments?*, Transportation Research Record. Falta confirmar la cita antes de dejarla en las slides.
 - La figura `images/06-tiempo-de-preparacion.png` reparte el tiempo de trabajo de un proyecto de datos en seis tareas (limpiar y organizar 60%, recolectar 19%, buscar patrones 9%, otras 5%, refinar algoritmos 4%, construir datos de entrenamiento 3%). La lámina de la unidad 06 la atribuye a una encuesta de CrowdFlower. Los porcentajes vienen del pptx `06 - Análisis exploratorio` del curso anterior, que citaba a Forbes (2016). Falta confirmar el informe original, su año y la cantidad de personas encuestadas.
 
 ## Bibliografía
