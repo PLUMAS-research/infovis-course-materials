@@ -76,7 +76,7 @@ por_nombre = (
 )
 print(f"Nombres con 2.000 inscripciones o más: {len(por_nombre):,}")
 
-fig, ax = plt.subplots(figsize=(4.6, 3.2))
+fig, ax = plt.subplots(figsize=(4.6, 3.4))
 scatterplot(por_nombre, x="anios", y="peak", ax=ax, scatter_args={"color": AZUL, "s": 10})
 ax.set_yscale("log")
 ax.set_title("Duración y máximo de cada nombre")
@@ -107,7 +107,7 @@ series = (
     * 100
 )
 
-fig, ax = plt.subplots(figsize=(4.6, 2.8))
+fig, ax = plt.subplots(figsize=(4.6, 3.4))
 series.plot(ax=ax, lw=1.2)
 ax.set_title("Líneas")
 ax.set_xlabel("Año de inscripción")
@@ -115,7 +115,7 @@ ax.set_ylabel("% de inscripciones del año")
 ax.legend(fontsize=6)
 fig.savefig("images/05-lineas.png", dpi=DPI, bbox_inches="tight")
 
-fig, ax = plt.subplots(figsize=(4.6, 2.8))
+fig, ax = plt.subplots(figsize=(7.4, 3.8))
 series.plot(kind="area", ax=ax, lw=0, alpha=0.85)
 ax.set_title("Áreas apiladas")
 ax.set_xlabel("Año de inscripción")
@@ -152,7 +152,7 @@ principales = modo_periodo.sum().nlargest(5).index
 modo_periodo = modo_periodo[principales]
 print(modo_periodo)
 
-fig, axes = plt.subplots(1, 2, figsize=(9, 3))
+fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.8))
 barchart(modo_periodo, stacked=True, horizontal=True, palette="viridis", ax=axes[0])
 axes[0].set_title("Apiladas: total y composición")
 axes[0].set_ylabel("")
@@ -178,7 +178,7 @@ fig.savefig("images/05-barras.png", dpi=DPI, bbox_inches="tight")
 
 hora = viajes["hora_inicio"].dropna()
 
-fig, axes = plt.subplots(1, 3, figsize=(9, 2.4), sharey=True)
+fig, axes = plt.subplots(1, 3, figsize=(7.4, 3.8), sharey=True)
 for ax, bins in zip(axes, [6, 12, 24]):
     hora.plot(kind="hist", bins=bins, color=AZUL, ax=ax, edgecolor="white", linewidth=0.4)
     ax.set_title(f"{bins} intervalos")
@@ -213,7 +213,7 @@ duraciones = duraciones[~largos]
 # hacia abajo.
 ORDEN = duraciones.groupby("modo")["minutos"].median().sort_values().index
 
-fig, ax = plt.subplots(figsize=(6, 2.8))
+fig, ax = plt.subplots(figsize=(4.6, 3.4))
 sns.boxplot(
     data=duraciones, x="minutos", y="modo", order=ORDEN, ax=ax, color=GRIS,
     width=0.55, fliersize=1, medianprops={"color": MAGENTA, "linewidth": 1.2},
@@ -240,7 +240,7 @@ print(duraciones.groupby("modo")["minutos"].quantile([0.25, 0.5, 0.75]).unstack(
 #
 # Operación: ninguna. El gráfico estima la densidad sobre las observaciones.
 
-fig, ax = plt.subplots(figsize=(6, 2.8))
+fig, ax = plt.subplots(figsize=(4.6, 3.4))
 sns.violinplot(
     data=duraciones, x="minutos", y="modo", order=ORDEN, ax=ax, color=GRIS,
     inner="quart", cut=0, linewidth=0.6, density_norm="width",
@@ -257,7 +257,7 @@ fig.savefig("images/05-violin.png", dpi=DPI, bbox_inches="tight")
 # de cada modo y cuánto se extiende; el violín dice cuántos viajes hay en cada
 # duración, que es lo que la caja no puede decir.
 
-fig, axes = plt.subplots(1, 2, figsize=(9, 2.8), sharey=True)
+fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.8), sharey=True)
 sns.boxplot(
     data=duraciones, x="minutos", y="modo", order=ORDEN, ax=axes[0], color=GRIS,
     width=0.55, fliersize=1, medianprops={"color": MAGENTA, "linewidth": 1.2},
@@ -289,7 +289,7 @@ fig.savefig("images/05-boxplot-violin.png", dpi=DPI, bbox_inches="tight")
 #
 # Operación: ninguna. Las tres capas se dibujan sobre las mismas observaciones.
 
-fig, ax = plt.subplots(figsize=(8, 3.2))
+fig, ax = plt.subplots(figsize=(4.8, 3.6))
 
 # La nube: violín completo, recortado después a su mitad superior.
 sns.violinplot(
@@ -350,7 +350,7 @@ corrientes = (
     .unstack(fill_value=0)
 )
 
-fig, ax = plt.subplots(figsize=(7.5, 3))
+fig, ax = plt.subplots(figsize=(7.4, 3.8))
 streamgraph(corrientes, palette="husl", ax=ax)
 ax.set_title("Los doce nombres más inscritos del siglo")
 ax.set_xlabel("Año de inscripción")
@@ -376,7 +376,7 @@ matriz = (
 )
 matriz = matriz.loc[matriz.sum(axis=1).nlargest(6).index]
 
-fig, ax = plt.subplots(figsize=(7.5, 2.6))
+fig, ax = plt.subplots(figsize=(7.4, 3.8))
 heatmap(matriz, cmap="magma_r", ax=ax, cbar_kws={"label": "viajes"})
 ax.set_title("Propósito del viaje por hora de inicio")
 ax.set_xlabel("Hora de inicio")
@@ -409,7 +409,7 @@ perfiles = perfiles.div(perfiles.sum(axis=1), axis=0) * 100
 
 ax = heatmap(
     perfiles, cluster_rows=True, cmap="magma_r", robust=True, linewidths=0.3,
-    fig_args={"figsize": (8, 3.6)}, cbar_kws={"label": "% de los viajes"},
+    fig_args={"figsize": (7.4, 3.8)}, cbar_kws={"label": "% de los viajes"},
 )
 ax.set_title("Perfil horario de cada propósito")
 ax.set_xlabel("Hora de inicio")
@@ -446,7 +446,7 @@ semana = semana.div(semana.sum(axis=1), axis=0) * 100
 
 ax = heatmap(
     semana, cluster_rows=True, cmap="magma_r", annot=True, fmt=".0f", linewidths=0.3,
-    annot_kws={"fontsize": 6}, cbar=False, fig_args={"figsize": (6.5, 3.6)},
+    annot_kws={"fontsize": 6}, cbar=False, fig_args={"figsize": (7.4, 3.8)},
 )
 ax.set_title("Perfil semanal de cada propósito (% de sus viajes)")
 ax.set_xlabel("")
@@ -471,7 +471,7 @@ print(fin_de_semana.round(1).to_string())
 #
 # Operación: la misma tabla período por modo de la parte 4.
 
-fig, ax = plt.subplots(figsize=(7, 3))
+fig, ax = plt.subplots(figsize=(7.4, 3.8))
 marimekko(modo_periodo, palette="viridis", ax=ax)
 ax.set_title("Composición modal por período, con el ancho según el total")
 fig.savefig("images/05-marimekko.png", dpi=DPI, bbox_inches="tight")
@@ -538,7 +538,7 @@ splom.figure.savefig("images/05-splom.png", dpi=DPI, bbox_inches="tight")
 # líneas que se cruzan, y con relación directa como líneas paralelas. Acá cada
 # eje va al lado del atributo con el que más se relaciona.
 
-fig, ax = plt.subplots(figsize=(7, 3))
+fig, ax = plt.subplots(figsize=(7.4, 3.8))
 parallel_coordinates(
     comunas, columns=ATRIBUTOS, hue="sector", palette=PALETA_SECTOR, ax=ax,
     labels=["Vitacura", "Las Condes", "Santiago", "La Pintana", "Providencia"],
@@ -565,7 +565,7 @@ conteos = (
 )
 composicion = conteos.div(conteos.sum(axis=1), axis=0) * 100
 
-fig, axes = plt.subplots(1, 2, figsize=(9, 2.8), sharex=True)
+fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.8), sharex=True)
 conteos.plot(kind="area", ax=axes[0], lw=0, legend=False)
 axes[0].set_title("Áreas apiladas: total y composición", fontsize=9)
 axes[0].set_ylabel("Inscripciones")
@@ -594,7 +594,7 @@ por_hora = (
     viajes["hora_inicio"].value_counts().reindex(range(24), fill_value=0).sort_index()
 )
 
-fig, ax = plt.subplots(figsize=(3.8, 3.6), subplot_kw={"projection": "polar"})
+fig, ax = plt.subplots(figsize=(4.4, 3.3), subplot_kw={"projection": "polar"})
 grados = por_hora.index * 15
 ax.bar(np.radians(grados), por_hora.values, width=np.radians(15),
        color=AZUL, edgecolor="white", linewidth=0.4)
@@ -624,7 +624,7 @@ print(f"Hora con más viajes: {por_hora.idxmax()}h ({por_hora.max():,} viajes)")
 partes = viajes["modo"].value_counts().head(6)
 partes = (partes / partes.sum() * 100).sort_values(ascending=False)
 
-fig, axes = plt.subplots(1, 2, figsize=(9, 2.8), width_ratios=[1, 1.6])
+fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.8), width_ratios=[1, 1.6])
 colores = plt.get_cmap("viridis")(np.linspace(0.15, 0.9, len(partes)))
 
 axes[0].pie(partes.values, labels=partes.index, colors=colores, startangle=90,
@@ -694,7 +694,7 @@ DESTACADAS = ["Vitacura", "Las Condes", "Santiago", "Puente Alto", "La Pintana",
 
 tax = ternary_scatter(
     particion, ["Auto", "Público", "Activo"], hue="sector", size="viajes",
-    labels=DESTACADAS, palette=PALETA_SECTOR, fig_args={"figsize": (5.5, 4.8)},
+    labels=DESTACADAS, palette=PALETA_SECTOR, fig_args={"figsize": (5.0, 3.7)},
 )
 ax = tax.get_axes()
 ax.set_title("Partición modal de cada comuna", y=1.09)

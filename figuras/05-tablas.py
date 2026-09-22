@@ -36,7 +36,7 @@ CATEGORIAS = ["Bus", "Auto", "Metro", "Caminata", "Taxi"]
 VALORES = [38, 27, 19, 12, 4]
 otro_orden = [3, 0, 4, 2, 1]
 
-fig, axes = plt.subplots(1, 3, figsize=(9, 2.4), sharey=True)
+fig, axes = plt.subplots(1, 3, figsize=(7.4, 3.8), sharey=True)
 
 axes[0].bar(CATEGORIAS, VALORES, color=AZUL, width=0.65)
 axes[0].set_title("Barras", fontsize=9)
@@ -82,7 +82,7 @@ for nombre, valores in DISTRIBUCIONES.items():
     q1, q3 = np.percentile(valores, [25, 75])
     DISTRIBUCIONES[nombre] = (valores - q1) / (q3 - q1) * (objetivo[1] - objetivo[0]) + objetivo[0]
 
-fig, axes = plt.subplots(1, 3, figsize=(9.6, 2.8), sharey=True)
+fig, axes = plt.subplots(1, 3, figsize=(7.4, 3.8), sharey=True)
 
 axes[0].boxplot(
     DISTRIBUCIONES.values(), tick_labels=list(DISTRIBUCIONES), showfliers=False,

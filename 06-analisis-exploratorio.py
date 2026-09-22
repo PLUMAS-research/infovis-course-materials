@@ -190,7 +190,7 @@ print(
 # Aparecen dos problemas del registro y ninguno es sobre nombres. El primero es
 # que empieza incompleto y su cobertura crece hasta los años cincuenta. El
 # segundo es que en 2018 los nombres distintos suben sin que suban las
-# inscripciones, así que cambió lo que la fuente registra.
+# inscripciones, así que cambió lo que registra la fuente.
 
 ANIO_INICIO = 1930
 ANIO_CAMBIO_FUENTE = 2018
@@ -384,7 +384,7 @@ print(f"Correlación dentro de cada década ({len(dentro_de_decada)} décadas): 
 #
 # No se puede responder. La tabla no trae comuna, región ni coordenadas, y no
 # hay forma de derivarlas desde el año, el nombre o el sexo. Harían falta la
-# comuna de la inscripción, que la fuente no publica, o el registro individual,
+# comuna de la inscripción, que no publica la fuente, o el registro individual,
 # que no es público por protección de datos.
 #
 # La consecuencia es un límite de las tareas, y no un vacío que se llene con
