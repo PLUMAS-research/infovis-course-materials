@@ -61,6 +61,8 @@ CONASET_DIR = _conf("CONASET_DIR", "INFOVIS_CONASET_DIR", ruta=True)
 GUAGUAS_CSV = _conf("GUAGUAS_CSV", "INFOVIS_GUAGUAS_CSV", ruta=True)
 JAZZ_DIR = _conf("JAZZ_DIR", "INFOVIS_JAZZ_DIR", ruta=True)
 NDVI_TIF = _conf("NDVI_TIF", "INFOVIS_NDVI_TIF", ruta=True)
+MUNDO_ZIP = _conf("MUNDO_ZIP", "INFOVIS_MUNDO_ZIP", ruta=True)
+GTFS_ZIP = _conf("GTFS_ZIP", "INFOVIS_GTFS_ZIP", ruta=True)
 
 
 def requerir(ruta, descripcion, env_var):

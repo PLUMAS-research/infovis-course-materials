@@ -54,9 +54,12 @@ setup_style(font_family="Beauchef", font_glob="~/.fonts/Latinotype*/**/*.otf")
 # devuelve o registra si la familia quedó disponible, en vez de fallar callado
 ```
 
-## 4. Conteo de puntos sobre una grilla H3
+## 4. Conteo de puntos sobre una grilla H3 (resuelto en 0.3.0)
 
-El mapa de la unidad 03 necesita cuatro pasos para algo que se pide siempre:
+`chiricoca.geo.grid.count_in_grid(points, grid_level=8, column="n", grid=None, agg=None)`
+ya hace exactamente esto, y además avisa cuántos puntos quedaron fuera de la
+grilla. Queda pendiente migrar el mapa de la unidad 03, que sigue con los cuatro
+pasos a mano:
 
 ```python
 grilla = h3_grid_from_bounds(siniestros.total_bounds, grid_level=7)
@@ -73,8 +76,20 @@ celdas = contar_en_grilla(siniestros, grid_level=7, columna="siniestros")
 celdas = agregar_en_grilla(siniestros, grid_level=7, agg={"victimas": "sum"})
 ```
 
-La unidad 08 (mapas) y la 12 (reducción de complejidad) van a repetir el mismo
-patrón, así que conviene resolverlo antes.
+La unidad 07 ya usa `count_in_grid`.
+
+**Al escribir esa unidad apareció que chiricoca tiene más de lo que el material
+usaba.** Antes de escribir un helper geográfico conviene mirar acá:
+
+| Módulo | Funciones |
+|:---|:---|
+| `chiricoca.geo.utils` | `to_point_geodataframe`, `clip_area_geodataframe`, `clip_point_geodataframe`, `bounding_box`, `k_coloreo` |
+| `chiricoca.geo.grid` | `h3_grid_from_bounds`, `count_in_grid`, `asignar_celdas_h3`, `h3_grid_from_ids` |
+| `chiricoca.geo.figures` | `figure_from_geodataframe`, `small_multiples_from_geodataframe`, `set_axis_aspect` |
+| `chiricoca.maps` | `dot_map`, `bubble_map`, `choropleth_map`, `heat_map`, `bivariate_choropleth_map`, `lisa_map`, `add_basemap`, `context_boundaries`, `geographical_labels`, `geographical_scale`, `north_arrow`, `kde_from_points` |
+
+Lo que sigue faltando para el catálogo de mapas está en `PLAN-MAPAS.md`: flow
+map, cartogramas, isolíneas y las siete técnicas más caras.
 
 ## 5. Descarga de datasets publicados
 
@@ -204,3 +219,18 @@ El mismo bucle destapó un segundo problema: el tamaño de la etiqueta sale del
 radio de la burbuja sin medir el ancho del texto, así que un nombre largo se
 sale de su burbuja y lo recorta el `xlim` que la propia función fija. En la
 unidad 06 se resolvió bajando `max_label_size` a 20 hasta que ninguna se pasó.
+
+## 13. Paleta por omisión de `heat_map`
+
+`heat_map` pinta todos sus niveles, incluido el más bajo, así que con una paleta
+oscura el nivel de fondo cubre la ciudad entera y el mapa se lee como si todo
+fuera denso. Con `magma_r` o `inferno_r` pasa; con una paleta que arranque casi
+en blanco, no:
+
+```python
+heat_map(origenes, n_levels=7, palette="Reds", low_threshold=0.6, ax=ax)
+```
+
+La propuesta es que la paleta por omisión arranque en un valor claro, o que el
+nivel más bajo se dibuje transparente. Hoy hay que descubrirlo probando, y el
+mapa intermedio se ve plausible aunque esté mal.

@@ -35,3 +35,11 @@ NDVI_TIF = "~/datos/ndvi-santiago-2023.tif"
 
 # Siniestros de tránsito georreferenciados de CONASET (un GeoJSON por año).
 CONASET_DIR = "~/datos/conaset"
+
+# Países del mundo a escala 1:110m, de Natural Earth (dominio público).
+# Se descarga de https://www.naturalearthdata.com/downloads/110m-cultural-vectors/
+MUNDO_ZIP = "~/datos/ne_110m_admin_0_countries.zip"
+
+# GTFS del transporte público de Santiago (DTPM), un zip con las tablas
+# estándar. Se descarga de https://www.dtpm.cl/index.php/documentos/gtfs
+GTFS_ZIP = "~/datos/gtfs.zip"

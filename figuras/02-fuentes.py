@@ -36,10 +36,6 @@ estilo_curso(dpi=DPI)
 DIR_IMAGENES = Path("images")
 DIR_IMAGENES.mkdir(exist_ok=True)
 
-# Estos datasets se comparten con el curso de datos geográficos, así que se
-# bajan de su servidor con la URL completa.
-GDS = "https://dcc.uchile.cl/~egraells/gds-data"
-
 FIGSIZE = (3.4, 3.4)
 
 # %%
@@ -70,7 +66,7 @@ def guardar(fig, nombre):
 
 # %%
 # Censo 2024: población por celda hexagonal de la Región Metropolitana.
-censo = descargar_datos(f"{GDS}/censo2024-asignacion-rm.tgz")
+censo = descargar_datos("censo2024-asignacion-rm.tgz")
 celdas = pd.read_parquet(censo / "asignaciones-h3-8.parquet")
 celdas["personas"] = celdas["n_hombres"] + celdas["n_mujeres"]
 print(f"Censo 2024: {len(celdas):,} celdas, {celdas['personas'].sum():,.0f} personas")
@@ -87,7 +83,7 @@ guardar(fig, "02-fuente-censo.png")
 
 # %%
 # SOSAFE: reportes ciudadanos de una quincena, con su categoría.
-sosafe = descargar_datos(f"{GDS}/sosafe-clustering.tgz")
+sosafe = descargar_datos("sosafe-clustering.tgz")
 reportes = gpd.read_parquet(sosafe / "reportes-quincena.parquet")
 print(f"SOSAFE: {len(reportes):,} reportes, {reportes['grupo'].nunique()} grupos")
 
@@ -100,7 +96,7 @@ guardar(fig, "02-fuente-sosafe.png")
 # %%
 # eBird: cada observación de ave en su punto, sin agregar a celdas. Así se ve
 # que la cobertura sigue a los observadores y no al territorio.
-ebird = descargar_datos(f"{GDS}/ebird-santiago-2024.tgz")
+ebird = descargar_datos("ebird-santiago-2024.tgz")
 observaciones = pd.read_parquet(ebird / "observaciones.parquet")
 aves = gpd.GeoDataFrame(
     observaciones,
@@ -117,7 +113,7 @@ guardar(fig, "02-fuente-ebird.png")
 
 # %%
 # SINCA: material particulado fino diario en las estaciones de Santiago.
-sinca = descargar_datos(f"{GDS}/sinca-santiago-2024.tgz")
+sinca = descargar_datos("sinca-santiago-2024.tgz")
 pm25 = pd.read_parquet(sinca / "pm25-diario.parquet")
 print(f"SINCA: {pm25['codigo'].nunique()} estaciones, {len(pm25):,} mediciones diarias")
 
@@ -134,8 +130,8 @@ guardar(fig, "02-fuente-sinca.png")
 
 # %%
 # Rasters de Sentinel-2 y VIIRS: dos campos sobre la misma ciudad.
-ndvi_tif = descargar_archivo(f"{GDS}/ndvi-santiago-2023.tif")
-luz_tif = descargar_archivo(f"{GDS}/luminosidad-santiago-2023.tif")
+ndvi_tif = descargar_archivo("ndvi-santiago-2023.tif")
+luz_tif = descargar_archivo("luminosidad-santiago-2023.tif")
 
 fig, axes = plt.subplots(1, 2, figsize=(5.2, 2.6))
 for ax, ruta, cmap, borde, titulo in [
