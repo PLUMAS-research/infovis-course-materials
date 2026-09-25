@@ -8,16 +8,17 @@ unidad sobre la que se agregan los datos.
 
 Los datos son los del proyecto de la clase del hito 2:
 
-  Situación. La Encuesta Origen-Destino 2012 registra dónde empieza cada viaje
-  en Santiago y en qué modo. El GTFS del DTPM entrega la ubicación de las
+  Situación. El Metro de Santiago inauguró la Línea 6 en 2017 y la Línea 3 en
+  2019. La Encuesta Origen-Destino 2012 registra dónde empezaba cada viaje
+  antes de esa ampliación, y el GTFS del DTPM entrega la ubicación de las
   estaciones de Metro y de los paraderos de bus.
 
-  Complicación. El acceso al Metro se describe por comuna, y la comuna es una
-  unidad demasiado grande: dentro de una misma comuna hay zonas a 300 metros de
-  una estación y otras a tres kilómetros.
+  Complicación. La ampliación se discute por comuna, y a esa escala no se
+  distingue si las líneas fueron hacia donde había demanda sin alternativa.
 
-  Propuesta. Comparar el acceso al Metro entre zonas de la ciudad, e
-  identificar las zonas donde la demanda ocurre lejos de la red.
+  Propuesta. Ordenar los sectores de la ciudad según la brecha entre su demanda
+  de transporte público y su acceso al Metro, para orientar dónde conviene que
+  la red siga creciendo.
 
 Acá cada operación se muestra por separado, con lo que hay que revisar al
 usarla.
@@ -36,16 +37,15 @@ from chiricoca.geo.utils import (
     clip_point_geodataframe,
     to_point_geodataframe,
 )
-from chiricoca.colors import colormap_from_palette
-from chiricoca.maps import choropleth_map, dot_map, geographical_scale
+from chiricoca.maps import dot_map
 from chiricoca.tables import barchart
-from matplotlib.colors import BoundaryNorm
 from matplotlib.ticker import MaxNLocator
 from shapely import get_num_coordinates, make_valid
 from shapely.geometry import Polygon
 
 from visutils.estilo import AZUL, DPI, GRIS, MAGENTA, estilo_curso
 from visutils.general import descargar_datos
+from visutils.graficos import barra_de_escala, coropleta, fondo_de_mapa, miles, porcentaje
 
 estilo_curso()
 
@@ -57,71 +57,8 @@ CRS_MAPA = "EPSG:4326"
 # El área de estudio de la encuesta, la misma caja de la sesión de mapas.
 CAJA_URBANA = (-70.85, -33.65, -70.45, -33.30)
 
-# La latitud del centro de la ciudad, para pasar grados a metros en las barras
-# de escala de los mapas dibujados en EPSG:4326.
-LATITUD_SANTIAGO = -33.45
-
-
-def miles(n):
-    """Un número con el separador de miles del castellano."""
-    return f"{n:,.0f}".replace(",", ".")
-
-
-def barra_de_escala(ax, crs=CRS_MAPA, color=AZUL):
-    """Barra de distancia sobre el mapa.
-
-    `dx` es cuánto mide en metros una unidad del eje: en un sistema métrico es
-    un metro, y en grados depende de la latitud.
-    """
-    metros_por_unidad = (
-        1.0 if crs == CRS_METRICO else 111_320 * np.cos(np.radians(LATITUD_SANTIAGO))
-    )
-    geographical_scale(
-        ax, dx=metros_por_unidad, units="m", location="lower right", frameon=False,
-        color=color, font_properties={"size": 6}, scale_loc="top",
-        length_fraction=0.25, rotation="horizontal-only",
-    )
-
-
-def barra_de_rangos(ax, bordes, palette, etiqueta):
-    """Barra de color por clases, con un bloque del mismo ancho por clase.
-
-    La barra que trae la coropleta ubica cada corte según su valor, y en una
-    distribución sesgada los cortes bajos quedan tan juntos que sus rótulos se
-    encabalgan. `spacing="uniform"` reparte los bloques por igual.
-    """
-    colores = colormap_from_palette(palette, n_colors=len(bordes) - 1)
-    barra = ax.get_figure().colorbar(
-        plt.cm.ScalarMappable(norm=BoundaryNorm(bordes, colores.N), cmap=colores),
-        ax=[ax], orientation="horizontal", ticks=bordes, spacing="uniform",
-        fraction=0.045, pad=0.02, shrink=0.9,
-    )
-    barra.set_label(etiqueta, fontsize=7)
-    barra.ax.tick_params(labelsize=6)
-    barra.ax.set_xticklabels([miles(b) for b in bordes])
-    return barra
-
-
-def mapa_de_conteo(capa, columna, ax, titulo, etiqueta="viajes", bins=None):
-    """Coropleta con las comunas de fondo, la escala y la leyenda de clases.
-
-    Con `bins` los cortes vienen de afuera, que es lo que hace falta cuando dos
-    paneles muestran la misma variable sobre el mismo soporte.
-    """
-    comunas.plot(ax=ax, facecolor=GRIS, edgecolor="white", linewidth=0.3)
-    # Los cuantiles reparten las unidades entre las clases, que en una variable
-    # de conteos deja más contraste que los cortes naturales.
-    clasificacion = ({"binning": "custom", "bins": bins} if bins is not None
-                     else {"binning": "quantiles", "k": 5})
-    _, info = choropleth_map(
-        capa, columna, ax=ax, palette="Blues", edgecolor="none", linewidth=0,
-        legend=None, **clasificacion,
-    )
-    comunas.boundary.plot(ax=ax, color="white", linewidth=0.3, zorder=3)
-    barra_de_rangos(ax, info["bins"], "Blues", etiqueta)
-    barra_de_escala(ax)
-    ax.set_title(titulo, fontsize=9)
-    ax.set_axis_off()
+# El relleno de las comunas cuando el dato va encima en color.
+FONDO_CLARO = "#F4F4F7"
 
 
 # %%
@@ -140,9 +77,6 @@ comunas = gpd.read_parquet(carpeta_eod / "comunas.parquet")
 estaciones = gpd.read_parquet(carpeta_paradas / "estaciones-metro.parquet")
 paraderos = gpd.read_parquet(carpeta_paradas / "paraderos-bus.parquet")
 
-print(f"{len(viajes):,} viajes, {len(zonas)} zonas, {len(comunas)} comunas")
-print(f"{len(estaciones)} estaciones de Metro, {len(paraderos):,} paraderos de bus")
-
 # %%
 # Los viajes traen las coordenadas como columnas numéricas y las paradas ya
 # vienen con geometría. `to_point_geodataframe` arma los puntos y `crs` es lo
@@ -150,8 +84,7 @@ print(f"{len(estaciones)} estaciones de Metro, {len(paraderos):,} paraderos de b
 
 origenes = to_point_geodataframe(viajes, "origen_x", "origen_y", crs=CRS_METRICO)
 
-print(f"Orígenes: {origenes.crs.to_string()}")
-print(f"Estaciones: {estaciones.crs.to_string()}")
+print(f"Orígenes en {origenes.crs.to_string()}, estaciones en {estaciones.crs.to_string()}")
 
 # Las dos capas viven en sistemas distintos, así que una de las dos tiene que
 # moverse antes de cualquier operación. Geopandas no reproyecta por su cuenta y
@@ -165,8 +98,8 @@ origenes = origenes.to_crs(CRS_MAPA)
 # estén donde corresponde. Cada criterio deja un conteo, que es lo que el hito 2
 # pide reportar.
 
-print(f"Geometrías vacías: {origenes.geometry.is_empty.sum()}")
-print(f"Polígonos válidos: zonas {zonas.is_valid.all()}, comunas {comunas.is_valid.all()}")
+print(f"Geometrías vacías: {origenes.geometry.is_empty.sum()}; polígonos válidos: "
+      f"zonas {zonas.is_valid.all()}, comunas {comunas.is_valid.all()}")
 
 # %%
 # Qué es un polígono inválido. El caso más común es la autointersección: el
@@ -176,9 +109,8 @@ print(f"Polígonos válidos: zonas {zonas.is_valid.all()}, comunas {comunas.is_v
 mono = Polygon([(0, 0), (2, 2), (2, 0), (0, 2)])
 reparado = make_valid(mono)
 
-print(f"\nPolígono cruzado: válido={mono.is_valid}, área={mono.area}")
-print(f"Reparado: tipo={reparado.geom_type}, piezas={len(reparado.geoms)}, "
-      f"área={reparado.area}")
+print(f"Polígono cruzado: válido={mono.is_valid}, área={mono.area}; reparado: "
+      f"{reparado.geom_type} de {len(reparado.geoms)} piezas, área={reparado.area}")
 
 # Cualquier operación sobre una geometría inválida falla con TopologyException o,
 # peor, entrega un resultado sin avisar.
@@ -197,10 +129,9 @@ paraderos = clip_point_geodataframe(paraderos, CAJA_URBANA)
 comunas = clip_area_geodataframe(comunas, CAJA_URBANA)
 zonas = clip_area_geodataframe(zonas, CAJA_URBANA)
 
-print(f"\nDentro del área de estudio: {len(origenes):,} viajes de {len(viajes):,} "
-      f"({len(origenes) / len(viajes):.1%})")
-print(f"{len(estaciones)} estaciones, {len(paraderos):,} paraderos")
-print(f"{len(comunas)} comunas, {len(zonas)} zonas")
+print(f"Dentro del área de estudio: {miles(len(origenes))} viajes de "
+      f"{miles(len(viajes))} ({porcentaje(len(origenes) / len(viajes), 1)}), "
+      f"{len(comunas)} comunas y {len(zonas)} zonas")
 
 # %%
 # Las dos capas de infraestructura, sobre las comunas del área de estudio.
@@ -211,12 +142,9 @@ for ax, capa, color, tamano, titulo in (
     (axes[0], paraderos, AZUL, 0.6, f"{miles(len(paraderos))} paraderos de bus"),
     (axes[1], estaciones, MAGENTA, 6, f"{len(estaciones)} estaciones de Metro"),
 ):
-    comunas.plot(ax=ax, facecolor="#F4F4F7", edgecolor="white", linewidth=0.4)
+    fondo_de_mapa(ax, comunas, relleno=FONDO_CLARO)
     dot_map(capa, ax=ax, size=tamano, color=color, alpha=0.6, add_legend=False)
-    comunas.boundary.plot(ax=ax, color="white", linewidth=0.4, zorder=3)
-    barra_de_escala(ax)
     ax.set_title(titulo, fontsize=9)
-    ax.set_axis_off()
 
 fig.suptitle("Paradas del transporte público de Santiago", fontsize=11, y=1.04)
 fig.savefig("images/07g-paradas.png", dpi=DPI, bbox_inches="tight")
@@ -232,10 +160,10 @@ santiago = comunas[comunas["comuna"] == "Santiago"]
 # La primera línea emite un aviso de geopandas: el área de un polígono en un
 # sistema de coordenadas geográficas sale en grados cuadrados, que no es una
 # unidad de superficie y no se puede comparar entre latitudes.
-print("Comuna de Santiago")
-print(f"  área en EPSG:4326  = {santiago.area.iloc[0]:.6f} grados cuadrados")
-print(f"  área en UTM 19 Sur = {santiago.to_crs(CRS_METRICO).area.iloc[0] / 1e6:.1f} km2")
-print(f"  perímetro en UTM   = {santiago.to_crs(CRS_METRICO).length.iloc[0] / 1000:.1f} km")
+print(f"Comuna de Santiago: {miles(santiago.area.iloc[0], 6)} grados cuadrados en "
+      f"EPSG:4326, {miles(santiago.to_crs(CRS_METRICO).area.iloc[0] / 1e6, 1)} km2 en "
+      f"UTM 19 Sur y {miles(santiago.to_crs(CRS_METRICO).length.iloc[0] / 1000, 1)} km "
+      "de perímetro")
 
 # `length` sobre un polígono es el perímetro, y sobre una línea es su largo.
 
@@ -254,9 +182,7 @@ comunas_m = comunas.to_crs(CRS_METRICO)
 baquedano = estaciones_m[estaciones_m["nombre"] == "Baquedano"].geometry.iloc[0]
 u_chile = estaciones_m[estaciones_m["nombre"] == "Universidad de Chile"].geometry.iloc[0]
 
-print(f"\nBaquedano a Universidad de Chile: {baquedano.distance(u_chile):,.0f} m")
-print(f"La misma distancia en grados: "
-      f"{estaciones.geometry.iloc[0].distance(estaciones.geometry.iloc[1]):.4f}")
+print(f"Baquedano a Universidad de Chile: {miles(baquedano.distance(u_chile))} m")
 
 # %%
 # PARTE 4: derivar una geometría de otra
@@ -269,8 +195,8 @@ centroides = zonas_m.geometry.centroid
 representativos = zonas_m.geometry.representative_point()
 
 fuera = ~centroides.within(zonas_m.geometry)
-print(f"Zonas cuyo centroide cae fuera de la zona: {fuera.sum()} de {len(zonas_m)}")
-print(f"Puntos representativos fuera: {(~representativos.within(zonas_m.geometry)).sum()}")
+print(f"Zonas con el centroide fuera: {fuera.sum()} de {len(zonas_m)}; con el punto "
+      f"representativo fuera: {(~representativos.within(zonas_m.geometry)).sum()}")
 
 # El centroide es el promedio del área y no tiene por qué caer dentro: una zona
 # en forma de C lo deja en el hueco. `representative_point` garantiza un punto
@@ -282,14 +208,14 @@ print(f"Puntos representativos fuera: {(~representativos.within(zonas_m.geometry
 # acá son metros.
 
 vertices_originales = get_num_coordinates(comunas_m.geometry).sum()
-print(f"\nVértices de las {len(comunas_m)} comunas: {vertices_originales:,}")
+print(f"Vértices de las {len(comunas_m)} comunas: {miles(vertices_originales)}")
 
 for tolerancia in (10, 50, 200, 1000):
     simplificadas = comunas_m.geometry.simplify(tolerancia)
     error = ((simplificadas.area - comunas_m.area).abs() / comunas_m.area).max()
-    print(f"  tolerancia {tolerancia:>5} m: "
-          f"{get_num_coordinates(simplificadas).sum():>7,} vértices, "
-          f"error de área máximo {error:.2%}")
+    print(f"  tolerancia de {miles(tolerancia)} m: "
+          f"{miles(get_num_coordinates(simplificadas).sum())} vértices, "
+          f"error de área máximo {porcentaje(error, 2)}")
 
 # %%
 # La zona donde el centroide queda más lejos de su propia geometría. Son dos
@@ -298,9 +224,9 @@ for tolerancia in (10, 50, 200, 1000):
 lejania = centroides.distance(zonas_m.geometry)
 zona_ejemplo = zonas_m.loc[[lejania.idxmax()]]
 
-print(f"\nZona {zona_ejemplo['zona'].iloc[0]} ({zona_ejemplo['comuna'].iloc[0]}): "
+print(f"Zona {zona_ejemplo['zona'].iloc[0]} ({zona_ejemplo['comuna'].iloc[0]}): "
       f"{zona_ejemplo.geom_type.iloc[0]}, el centroide cae a "
-      f"{lejania.max():.0f} m de la zona")
+      f"{miles(lejania.max())} m de la zona")
 
 fig, ax = plt.subplots(figsize=(4.6, 3.4))
 
@@ -310,7 +236,7 @@ ax.scatter(*zona_ejemplo.geometry.centroid.iloc[0].coords[0], color=MAGENTA,
 ax.scatter(*zona_ejemplo.geometry.representative_point().iloc[0].coords[0],
            color=AZUL, s=40, zorder=3, label="punto representativo")
 ax.legend(fontsize=8, frameon=False, loc="lower center")
-barra_de_escala(ax, crs=CRS_METRICO)
+barra_de_escala(ax, CRS_METRICO)
 ax.set_axis_off()
 ax.set_title(f"El centroide de la zona {zona_ejemplo['zona'].iloc[0]} cae fuera "
              "de la zona", fontsize=10)
@@ -327,7 +253,7 @@ for ax, tolerancia in zip(axes, (0, 200, 1000)):
              else comuna_ejemplo.geometry.simplify(tolerancia))
     comuna_ejemplo.boundary.plot(ax=ax, color=GRIS, linewidth=2.5)
     borde.boundary.plot(ax=ax, color=MAGENTA, linewidth=0.8)
-    barra_de_escala(ax, crs=CRS_METRICO)
+    barra_de_escala(ax, CRS_METRICO)
     ax.set_axis_off()
     ax.set_aspect("equal")
     etiqueta = ("sin simplificar" if tolerancia == 0
@@ -349,7 +275,6 @@ viajes_por_zona = (
     origenes.groupby("zona_origen", observed=True).size().rename("viajes")
 )
 
-print(f"Zonas con viajes en la tabla: {len(viajes_por_zona)}")
 print(f"Tipo de la llave: la capa trae {zonas['zona'].dtype} y la tabla "
       f"{viajes_por_zona.index.dtype}")
 
@@ -379,9 +304,8 @@ print(f"Filas que calzan entre '103' y '103.0': {prueba['viajes'].notna().sum()}
 zonas = zonas.merge(viajes_por_zona, left_on="zona", right_index=True, how="left")
 zonas_m = zonas_m.merge(viajes_por_zona, left_on="zona", right_index=True, how="left")
 
-print(f"\nZonas sin ningún viaje: {zonas['viajes'].isna().sum()} de {len(zonas)}")
-print(f"Viajes que quedaron asignados: {miles(zonas['viajes'].sum())} "
-      f"de {miles(len(origenes))}")
+print(f"Zonas sin ningún viaje: {zonas['viajes'].isna().sum()} de {len(zonas)}; "
+      f"viajes asignados: {miles(zonas['viajes'].sum())} de {miles(len(origenes))}")
 
 # `how="left"` conserva las zonas sin viajes y las deja en nulo, que es lo que
 # corresponde: la zona existe y no aparece en la encuesta. Con `how="inner"`
@@ -392,7 +316,8 @@ zonas_m["viajes"] = zonas_m["viajes"].fillna(0)
 # %%
 fig, ax = plt.subplots(figsize=(4.8, 5.0))
 
-mapa_de_conteo(zonas, "viajes", ax, "Viajes que salen de cada zona")
+coropleta(zonas, "viajes", ax, comunas, "viajes")
+ax.set_title("Viajes que salen de cada zona", fontsize=9)
 
 fig.savefig("images/07g-join-zonas.png", dpi=DPI, bbox_inches="tight")
 
@@ -417,9 +342,9 @@ sin_metro = viajes_comuna[
     viajes_comuna.index.isin(set(comunas_m["comuna"]) - set(por_comuna.index))
 ].head(6)
 
-print(f"Estaciones sin comuna asignada: {estaciones_comuna['comuna'].isna().sum()}")
-print(f"Comunas con estación: {len(por_comuna)} de {len(comunas_m)}")
-print("Comunas sin estación con más viajes que salen de ellas:")
+print(f"Estaciones sin comuna asignada: {estaciones_comuna['comuna'].isna().sum()}; "
+      f"comunas con estación: {len(por_comuna)} de {len(comunas_m)}. Las que no tienen "
+      "y generan más viajes:")
 print(sin_metro.to_string())
 
 # %%
@@ -430,8 +355,8 @@ print(sin_metro.to_string())
 borde_comunal = comunas_m.boundary.union_all()
 al_borde = estaciones_m.distance(borde_comunal)
 
-print(f"\nEstaciones a menos de 50 m de un límite comunal: {(al_borde < 50).sum()}")
-print(f"Estaciones a menos de 200 m: {(al_borde < 200).sum()}")
+print(f"Estaciones a menos de 50 m de un límite comunal: {(al_borde < 50).sum()}; "
+      f"a menos de 200 m: {(al_borde < 200).sum()}")
 
 # %%
 fig, ax = plt.subplots(figsize=(3.8, 3.2))
@@ -465,11 +390,9 @@ zonas_within = gpd.sjoin(
     predicate="within",
 )
 
-print(f"Zonas: {len(zonas_m)}")
-print(f"Filas con predicate='intersects': {miles(len(zonas_intersects))}")
-print(f"Filas con predicate='within':     {len(zonas_within)}")
-print(f"Zonas que tocan más de una comuna: "
-      f"{(zonas_intersects.groupby('zona').size() > 1).sum()}")
+print(f"{len(zonas_m)} zonas: {miles(len(zonas_intersects))} filas con 'intersects' y "
+      f"{len(zonas_within)} con 'within'; "
+      f"{(zonas_intersects.groupby('zona').size() > 1).sum()} tocan más de una comuna")
 
 # `intersects` cuenta el roce de un borde, así que casi toda zona toca a sus
 # vecinas. `within` pide que la zona quede entera adentro y deja fuera a las que
@@ -488,11 +411,10 @@ pedazos["area"] = pedazos.area
 
 comuna_de_zona = pedazos.sort_values("area").groupby("zona")["comuna"].last()
 
-print(f"\nPedazos que deja el overlay: {miles(len(pedazos))}")
-print(f"Zonas con comuna asignada por mayor superficie: {len(comuna_de_zona)}")
 asignada = comuna_de_zona.reindex(zonas_m["zona"]).to_numpy()
-print(f"Coincide con la columna comuna de la capa: "
-      f"{(asignada == zonas_m['comuna'].to_numpy()).mean():.1%}")
+print(f"Comuna asignada por mayor superficie a {len(comuna_de_zona)} zonas, desde "
+      f"{miles(len(pedazos))} pedazos; coincide con la columna de la capa en el "
+      f"{porcentaje((asignada == zonas_m['comuna'].to_numpy()).mean(), 1)}")
 
 # Un join sirve cuando se puede revisar: cuántas filas entraron, cuántas
 # salieron, cuántas quedaron sin pareja y cuántas se duplicaron.
@@ -518,9 +440,6 @@ cercania = cercania[~cercania.index.duplicated()]
 print(f"Distancia a la estación más cercana: "
       f"mediana {miles(cercania['distancia_metro'].median())} m, "
       f"máxima {miles(cercania['distancia_metro'].max())} m")
-print(f"La estación más veces más cercana: "
-      f"{cercania['estacion'].value_counts().index[0]} "
-      f"({miles(cercania['estacion'].value_counts().iloc[0])} viajes)")
 
 # %%
 # PARTE 9: construir una grilla
@@ -538,10 +457,10 @@ for nivel in (7, 8, 9):
     grilla_nivel = h3_grid_from_bounds(np.array(CAJA_URBANA), extra_margin=MARGEN,
                                        grid_level=nivel)
     area = grilla_nivel.to_crs(CRS_METRICO).area.mean() / 1e6
-    print(f"H3 nivel {nivel}: {miles(len(grilla_nivel))} celdas de {area:.2f} km2")
+    print(f"H3 nivel {nivel}: {miles(len(grilla_nivel))} celdas de {miles(area, 2)} km2")
 
 print(f"Zonas de la encuesta: {len(zonas_m)}, de "
-      f"{zonas_m.area.min() / 1e6:.2f} a {zonas_m.area.max() / 1e6:.1f} km2")
+      f"{miles(zonas_m.area.min() / 1e6, 2)} a {miles(zonas_m.area.max() / 1e6, 1)} km2")
 
 # H3 es una grilla hexagonal jerárquica: cada celda de un nivel se reparte en
 # siete del nivel siguiente y todas las celdas de un nivel tienen casi la misma
@@ -556,17 +475,15 @@ grilla_m = grilla.to_crs(CRS_METRICO)
 # %%
 # PARTE 10: contar sobre la grilla
 #
-# `count_in_grid` arma la grilla, hace el spatial join con los puntos y devuelve
-# la grilla con la cuenta. El argumento `grid` recibe una grilla ya construida,
-# que es lo que hace falta cuando dos conteos tienen que caer sobre el mismo
-# soporte.
+# `count_in_grid` hace el spatial join con los puntos y devuelve la grilla con
+# la cuenta. El argumento `grid` recibe una grilla ya construida, que es lo que
+# hace falta cuando dos conteos tienen que caer sobre el mismo soporte; sin él,
+# la función arma una del nivel `grid_level`.
 
-celdas = count_in_grid(origenes, grid_level=GRILLA_NIVEL, column="viajes", grid=grilla)
+celdas = count_in_grid(origenes, column="viajes", grid=grilla)
 
-print(f"Celdas con al menos un viaje: {miles(len(celdas))} de {miles(len(grilla))}")
-print(f"Viajes contados: {miles(celdas['viajes'].sum())} de {miles(len(origenes))}")
-print(f"Viajes por celda: mediana {celdas['viajes'].median():.0f}, "
-      f"máximo {miles(celdas['viajes'].max())}")
+print(f"Celdas con al menos un viaje: {miles(len(celdas))} de {miles(len(grilla))}, "
+      f"con {miles(celdas['viajes'].sum())} de {miles(len(origenes))} viajes")
 
 # %%
 fig, axes = small_multiples_from_geodataframe(comunas, 3, height=3.0, col_wrap=3)
@@ -574,12 +491,12 @@ fig, axes = small_multiples_from_geodataframe(comunas, 3, height=3.0, col_wrap=3
 for ax, nivel in zip(axes, (7, 8, 9)):
     grilla_nivel = h3_grid_from_bounds(np.array(CAJA_URBANA), extra_margin=MARGEN,
                                        grid_level=nivel)
-    conteo = count_in_grid(origenes, grid_level=nivel, column="viajes", grid=grilla_nivel)
+    conteo = count_in_grid(origenes, column="viajes", grid=grilla_nivel)
     area = grilla_nivel.to_crs(CRS_METRICO).area.mean() / 1e6
-    mapa_de_conteo(conteo, "viajes", ax,
-                   f"H3 nivel {nivel}, celdas de {area:.2f} km$^2$")
+    coropleta(conteo, "viajes", ax, comunas, "viajes")
+    ax.set_title(f"H3 nivel {nivel}, celdas de {miles(area, 2)} km$^2$", fontsize=9)
 
-fig.suptitle("Viajes que empiezan en cada celda", fontsize=11, y=1.04)
+fig.suptitle("Viajes que empiezan en cada celda", fontsize=11, y=1.08)
 fig.savefig("images/07g-grilla.png", dpi=DPI, bbox_inches="tight")
 
 # El nivel de la grilla decide el conteo igual que el ancho de banda decide un
@@ -611,8 +528,8 @@ repartido = (
     .sum()
 )
 
-print(f"Total en las zonas: {miles(zonas_m['viajes'].sum())}")
-print(f"Total repartido en la grilla: {miles(repartido.sum())}")
+print(f"Total en las zonas: {miles(zonas_m['viajes'].sum())}; repartido en la "
+      f"grilla: {miles(repartido.sum())}")
 
 # %%
 # El reparto supone que el dato se distribuye parejo dentro de la zona, y acá
@@ -628,21 +545,20 @@ comparacion = comparacion[(comparacion["repartido"] > 0) | (comparacion["directo
 
 diferencia = (comparacion["repartido"] - comparacion["directo"]).abs()
 
-print(f"\nCeldas comparables: {miles(len(comparacion))}")
-print(f"Correlación entre el reparto y el conteo directo: "
-      f"{comparacion['repartido'].corr(comparacion['directo']):.2f}")
-print(f"Diferencia por celda: mediana {diferencia.median():.1f} viajes, "
-      f"máxima {diferencia.max():.0f}")
+print(f"Sobre {miles(len(comparacion))} celdas, correlación entre el reparto y el "
+      f"conteo directo de {miles(comparacion['repartido'].corr(comparacion['directo']), 2)}; "
+      f"diferencia por celda con mediana de {miles(diferencia.median(), 1)} viajes y "
+      f"máximo de {miles(diferencia.max())}")
 
 # %%
 # Los dos paneles de la grilla comparten los cortes, porque muestran la misma
 # variable sobre el mismo soporte y la comparación es el punto de la figura.
-cortes_grilla = np.unique(
-    np.quantile(
-        np.concatenate([comparacion["repartido"], comparacion["directo"]]),
-        np.linspace(0, 1, 6),
-    )
-).round(0)
+# El reparto deja decimales, así que los cortes se redondean: la escala muestra
+# los mismos números con que el mapa asigna las clases.
+cortes_grilla = (
+    comparacion[["repartido", "directo"]].stack()
+    .quantile(np.linspace(0, 1, 6)).round().unique()
+)
 
 fig, axes = small_multiples_from_geodataframe(comunas, 3, height=3.0, col_wrap=3)
 
@@ -654,9 +570,10 @@ capas = (
 )
 
 for ax, (capa, columna, titulo, bins) in zip(axes, capas):
-    mapa_de_conteo(capa, columna, ax, titulo, bins=bins)
+    coropleta(capa, columna, ax, comunas, "viajes", bins=bins)
+    ax.set_title(titulo, fontsize=9)
 
-fig.suptitle("Viajes que empiezan en cada unidad", fontsize=11, y=1.04)
+fig.suptitle("Viajes que empiezan en cada unidad", fontsize=11, y=1.08)
 fig.savefig("images/07g-interpolacion.png", dpi=DPI, bbox_inches="tight")
 
 # El reparto por área inventa detalle donde la zona es grande, porque distribuye
@@ -677,8 +594,6 @@ zonas.to_parquet(SALIDA / "zonas-con-viajes.parquet")
 celdas.to_parquet(SALIDA / "celdas-h3.parquet")
 
 print(f"Escrito en {SALIDA}")
-print(f"  zonas-con-viajes.parquet: {len(zonas)} filas, "
-      f"{(SALIDA / 'zonas-con-viajes.parquet').stat().st_size / 1e6:.1f} MB")
 
 # Los otros formatos que aparecen en un proyecto:
 #
@@ -694,16 +609,19 @@ print(f"  zonas-con-viajes.parquet: {len(zonas)} filas, "
 # %%
 # PARTE 13: dónde se usa cada operación
 #
-# La clase del hito 2 (`07-hito2.py`) construye el mismo caso y usa estas
-# operaciones donde las necesita:
+# La clase del hito 2 construye el mismo caso y usa estas operaciones donde las
+# necesita:
 #
 #   - `to_point_geodataframe` y `to_crs`, para preparar los viajes.
 #   - `clip`, para el área de estudio.
-#   - `merge` por llave, para unir una tabla de conteos a una capa.
-#   - `sjoin`, para asignar cada viaje a su celda.
-#   - `sjoin_nearest`, para la distancia a la estación más cercana.
-#   - `h3_grid_from_bounds` y `count_in_grid`, para la unidad de análisis.
-#   - `overlay` con reparto por área, cuando el dato viene en otro soporte.
+#   - `h3_grid_from_bounds` y `count_in_grid`, para la unidad de análisis y la
+#     demanda de cada celda.
+#   - `join` por llave, para unir la población del censo a cada celda.
+#   - `sjoin`, para ubicar cada celda en su comuna.
+#   - `sjoin_nearest`, para la distancia de cada celda a la estación más cercana.
+#
+# El reparto por área con `overlay` no le hace falta, porque el censo ya viene
+# sobre la misma grilla. Haría falta si viniera por manzana.
 #
 # Las operaciones entre áreas (buffer, unión, intersección y diferencia) están
 # en esa clase, que las necesita para construir el área de servicio.
